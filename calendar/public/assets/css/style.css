@@ -1,0 +1,23 @@
+.event-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 20px;
+    padding-bottom: 20px;
+    margin-top: 25px;
+    margin: 0 auto;
+    width: 90%;
+}
+
+.event-day-container {
+    flex: 0 0 auto;
+    width: 30%;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
