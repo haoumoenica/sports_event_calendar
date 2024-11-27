@@ -1,37 +1,37 @@
 <?php
 require_once "../components/db/db_connect.php";
 
-# Get current date and time
+// Get current date and time
 $current_date_time = date('Y-m-d H:i:s');
 
-# SQL query to fetch upcoming events without duplication of teams
+// SQL query to fetch upcoming events without duplication of teams
 $sql = "SELECT e.id AS event_id, e.date_time, e.description, e.score, e.result_status, 
-           s.name AS sport_name, t1.name AS team1_name, t2.name AS team2_name, 
-           v.name AS venue_name, t1.logo AS team1_logo, t2.logo AS team2_logo
-    FROM event e
-    INNER JOIN sport s ON e._foreignkey_sport_id = s.id
-    LEFT JOIN event_team et1 ON et1._foreignkey_event_id = e.id
-    LEFT JOIN event_team et2 ON et2._foreignkey_event_id = e.id AND et1._foreignkey_team_id != et2._foreignkey_team_id
-    LEFT JOIN team t1 ON et1._foreignkey_team_id = t1.id
-    LEFT JOIN team t2 ON et2._foreignkey_team_id = t2.id
-    LEFT JOIN event_venue ev ON e.id = ev._foreignkey_event_id
-    LEFT JOIN venue v ON ev._foreignkey_venue_id = v.id
-    WHERE e.date_time >= '$current_date_time'
-    GROUP BY e.id, e.date_time, e.description, e.score, e.result_status, 
-             s.name, t1.name, t2.name, v.name, t1.logo, t2.logo
-    ORDER BY e.date_time ASC";
+               s.name AS sport_name, t1.name AS team1_name, t2.name AS team2_name, 
+               v.name AS venue_name, t1.logo AS team1_logo, t2.logo AS team2_logo
+        FROM event e
+        INNER JOIN sport s ON e._foreignkey_sport_id = s.id
+        LEFT JOIN event_team et1 ON et1._foreignkey_event_id = e.id
+        LEFT JOIN event_team et2 ON et2._foreignkey_event_id = e.id AND et1._foreignkey_team_id != et2._foreignkey_team_id
+        LEFT JOIN team t1 ON et1._foreignkey_team_id = t1.id
+        LEFT JOIN team t2 ON et2._foreignkey_team_id = t2.id
+        LEFT JOIN event_venue ev ON e.id = ev._foreignkey_event_id
+        LEFT JOIN venue v ON ev._foreignkey_venue_id = v.id
+        WHERE e.date_time >= '$current_date_time'
+        GROUP BY e.id, e.date_time, e.description, e.score, e.result_status, 
+                 s.name, t1.name, t2.name, v.name, t1.logo, t2.logo
+        ORDER BY e.date_time ASC";
 
-# Execute the query
+// Execute the query
 $result = $conn->query($sql);
 
-# Initialize an empty array to store the event IDs and group events by date
+// Initialize an empty array to store the event IDs and group events by date
 $events_by_date = [];
 $layout = "";  // Initialize the layout variable to store the HTML output
 
-# Counter for limiting days to 3
+// Counter for limiting days to 3
 $day_count = 0;
 
-# Check if any events are returned
+// Check if any events are returned
 if ($result->num_rows > 0) {
     // Initialize an array to track unique events to avoid duplicates
     $seen_events = [];
@@ -144,34 +144,33 @@ $conn->close();  // Close the database connection
     <!-- Bootstrap JS and dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-
     <script>
-        // Example logic for carousel navigation
-        let currentOffset = 0;
-        const container = document.querySelector('.event-container');
-        const nextBtn = document.getElementById('next-btn');
-        const prevBtn = document.getElementById('prev-btn');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const eventContainer = document.querySelector('.event-container');
 
-        // Get the width of a single day container dynamically
-        const dayContainerWidth = document.querySelector('.event-day-container').offsetWidth;
+        let scrollPosition = 0;
+        const scrollAmount = 300; // Scroll by 300px each time
 
-        // Scroll to the next 3 days
-        nextBtn.addEventListener('click', function() {
-            // Scroll by 3 days (width of 3 containers)
-            currentOffset += 3;
-            container.scrollLeft = currentOffset * dayContainerWidth;
+        // Event listener for the previous button
+        prevButton.addEventListener('click', () => {
+            scrollPosition -= scrollAmount;
+            if (scrollPosition < 0) scrollPosition = 0; // Prevent scrolling beyond the start
+            eventContainer.scrollTo({
+                left: scrollPosition,
+                behavior: 'smooth'
+            });
         });
 
-        // Scroll to the previous 3 days
-        prevBtn.addEventListener('click', function() {
-            if (currentOffset > 0) {
-                // Decrease by 3 days (width of 3 containers)
-                currentOffset -= 3;
-                container.scrollLeft = currentOffset * dayContainerWidth;
-            }
+        // Event listener for the next button
+        nextButton.addEventListener('click', () => {
+            scrollPosition += scrollAmount;
+            eventContainer.scrollTo({
+                left: scrollPosition,
+                behavior: 'smooth'
+            });
         });
     </script>
-
 </body>
 
 </html>
