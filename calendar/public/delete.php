@@ -1,22 +1,24 @@
 <?php
-
-// Include the database connection file
 require_once "../components/db/db_connect.php";
 
-$event_id = $_GET["event_id"];
+if (!isset($_GET['event_id'])) {
+    die("Event ID is required.");
+}
 
-$sql = "SELECT * FROM `event` WHERE event_id = {$event_id}";
-$result = mysqli_query($conn, $sql);
+$event_id = $_GET['event_id'];
 
-$row = mysqli_fetch_assoc($result);
+// Delete event_venue entry first
+$sql_delete_venue = "DELETE FROM event_venue WHERE _foreignkey_event_id = '$event_id'";
+$conn->query($sql_delete_venue);
 
+// Then delete the event
+$sql_delete_event = "DELETE FROM event WHERE id = '$event_id'";
 
+if ($conn->query($sql_delete_event)) {
+    header("Location: index.php");
+    exit;
+} else {
+    echo "Error deleting event: " . $conn->error;
+}
 
-// if ($row["logo"] != "pet.png") {
-//     unlink("pictures/{$row["picture"]}");
-// }
-
-
-$sqlDelete = "DELETE FROM `event` WHERE event_id = {$event_id}";
-mysqli_query($conn, $sqlDelete);
-header("Location: index.php");
+$conn->close();
