@@ -149,6 +149,12 @@ $conn->close();  // Close the database connection
 
     <div class="container my-5">
         <h2 class="text-center">Upcoming Sports Events</h2>
+
+        <!-- Button to create a new event -->
+        <div class="text-center mb-4">
+            <a href="create_event.php" class="btn btn-success">Create New Event</a>
+        </div>
+
         <!-- Display the event layout -->
         <?= $layout; ?>
     </div>

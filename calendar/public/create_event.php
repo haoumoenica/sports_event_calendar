@@ -1,116 +1,110 @@
 <?php
+// Include the database connection file
 require_once "../components/db/db_connect.php";
 
-// Get current date and time
-$current_date_time = date('Y-m-d H:i:s');
+// Initialize variables
+$sports = [];
+$teams = [];
+$selected_sport_id = null;
+$selected_team1 = null;
+$selected_team2 = null;
+$location = '';  // Variable to store the venue (location)
+$is_form_submitted = false; // Flag to check if the form is submitted
 
-// SQL query to fetch upcoming events without duplication of teams
-$sql = "SELECT e.id AS event_id, e.date_time, e.description, e.score, e.result_status, 
-               s.name AS sport_name, t1.name AS team1_name, t2.name AS team2_name, 
-               v.name AS venue_name, t1.logo AS team1_logo, t2.logo AS team2_logo
-        FROM event e
-        INNER JOIN sport s ON e._foreignkey_sport_id = s.id
-        LEFT JOIN event_team et1 ON et1._foreignkey_event_id = e.id
-        LEFT JOIN event_team et2 ON et2._foreignkey_event_id = e.id AND et1._foreignkey_team_id != et2._foreignkey_team_id
-        LEFT JOIN team t1 ON et1._foreignkey_team_id = t1.id
-        LEFT JOIN team t2 ON et2._foreignkey_team_id = t2.id
-        LEFT JOIN event_venue ev ON e.id = ev._foreignkey_event_id
-        LEFT JOIN venue v ON ev._foreignkey_venue_id = v.id
-        WHERE e.date_time >= '$current_date_time'
-        GROUP BY e.id, e.date_time, e.description, e.score, e.result_status, 
-                 s.name, t1.name, t2.name, v.name, t1.logo, t2.logo
-        ORDER BY e.date_time ASC";
+// Fetch the available sports from the database
+$sql_sports = "SELECT DISTINCT s.id, s.name AS sport 
+               FROM team t
+               JOIN sport s ON t._foreignkey_sport_id = s.id
+               ORDER BY s.name";
+$result_sports = $conn->query($sql_sports);
 
-// Execute the query
-$result = $conn->query($sql);
-
-// Initialize an empty array to store the event IDs and group events by date
-$events_by_date = [];
-$layout = "";  // Initialize the layout variable to store the HTML output
-
-// Counter for limiting days to 3
-$day_count = 0;
-
-// Check if any events are returned
-if ($result->num_rows > 0) {
-    // Initialize an array to track unique events to avoid duplicates
-    $seen_events = [];
-
-    // Loop through the events and group them by the date (without the time)
-    while ($row = $result->fetch_assoc()) {
-        // Format the date (remove the time)
-        $event_date = date('Y-m-d', strtotime($row['date_time']));
-
-        // Skip the event if it has already been added (this will prevent duplicates)
-        if (in_array($row['event_id'], $seen_events)) {
-            continue;  // Skip duplicate events
-        }
-
-        // Mark the event as seen
-        $seen_events[] = $row['event_id'];
-
-        // Add the event to the corresponding date in the $events_by_date array
-        $events_by_date[$event_date][] = $row;
+if ($result_sports && $result_sports->num_rows > 0) {
+    // Fetch all distinct sports
+    while ($row = $result_sports->fetch_assoc()) {
+        $sports[] = $row;  // Store sport ID and name
     }
+}
 
-    // Generate the HTML layout for events grouped by date
-    $layout .= "<div class='event-container'>";
+// If the form is submitted (POST request)
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $is_form_submitted = true; // Mark the form as submitted
 
-    foreach ($events_by_date as $date => $events) {
-        if ($day_count >= 3) {
-            break; // Stop after displaying 3 days
-        }
+    // Retrieve the selected sport ID
+    if (isset($_POST['sport']) && !empty($_POST['sport'])) {
+        $selected_sport_id = $_POST['sport'];
 
-        // Start a new section for each date
-        $layout .= "<div class='event-day-container'>";
-        $layout .= "<h4 class='text-center'>" . date('l, F j', strtotime($date)) . "</h4>";  // Display the formatted date
+        // Fetch teams for the selected sport
+        $sql_teams = "SELECT t.id, t.name AS team_name 
+                      FROM team t
+                      WHERE t._foreignkey_sport_id = '$selected_sport_id'
+                      ORDER BY t.name";
+        $result_teams = $conn->query($sql_teams);
 
-        // Limit the number of events displayed per day (Optional - based on how many events you want per day)
-        $event_count = 0;
-
-        // Loop through the events for the current date and display them in cards
-        foreach ($events as $event) {
-            if ($event_count >= 4) {
-                break; // Stop after displaying 4 events per day
+        if ($result_teams && $result_teams->num_rows > 0) {
+            // Fetch teams for the selected sport
+            while ($row = $result_teams->fetch_assoc()) {
+                $teams[] = $row;  // Store team ID and name
             }
-
-            // Format the date and time
-            $date_time = date('d-m-Y H:i', strtotime($event['date_time']));
-
-            // Generate the HTML card for each event
-            $layout .= "
-                <div class='mt-3'>
-                    <div class='card mb-4'>
-                        <div class='card-body'>
-                            <!-- Team Logos with Red Background -->
-                            <div class='team-logos'>
-                                <img src='assets/logos/{$event['team1_logo']}' alt='{$event['team1_name']} logo' class='team-logo'>
-                                <span class='vs-text'>VS</span>
-                                <img src='assets/logos/{$event['team2_logo']}' alt='{$event['team2_name']} logo' class='team-logo'>
-                            </div>
-                            <!-- Event Details -->
-                            <div class='event-details'>
-                                <h5 class='card-title'>{$event['sport_name']}</h5>
-                                <p><strong>{$event['team1_name']}</strong> vs <strong>{$event['team2_name']}</strong></p>
-                                <p><strong>Date & Time:</strong> {$date_time}</p>
-                                <p><strong>Venue:</strong> {$event['venue_name']}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            ";
-
-            $event_count++;
         }
 
-        $layout .= "</div>";  // Close the event day container div
-        $day_count++;
+        // Fetch location (venue) for team1 if selected
+        if (isset($_POST['team1']) && !empty($_POST['team1'])) {
+            $selected_team1 = $_POST['team1'];
+
+            // Fetch the venue for the selected team1
+            $sql_venue = "SELECT v.id AS venue_id, v.name AS venue_name 
+                          FROM team t
+                          JOIN venue v ON t._foreignkey_venue_id = v.id
+                          WHERE t.id = '$selected_team1'";
+            $result_venue = $conn->query($sql_venue);
+
+            if ($result_venue && $result_venue->num_rows > 0) {
+                $venue = $result_venue->fetch_assoc();
+                $location = $venue['venue_name'];  // Store venue name
+                $venue_id = $venue['venue_id'];    // Store venue ID for the relationship
+            }
+        }
+
+        // If form is submitted, process the event creation
+        if (isset($_POST['team1'], $_POST['team2'], $_POST['date_time'], $_POST['description'])) {
+            $selected_team1 = $_POST['team1'];
+            $selected_team2 = $_POST['team2'];
+            $date_time = $_POST['date_time'];
+            $description = $_POST['description'];
+
+            // If everything is valid (no empty fields), proceed
+            if ($selected_team1 != '' && $selected_team2 != '' && $date_time != '' && $location != '' && $selected_team1 != $selected_team2) {
+                // Validate if team2 exists in the team table
+                $sql_validate_team2 = "SELECT id FROM team WHERE id = '$selected_team2'";
+                $result_validate_team2 = $conn->query($sql_validate_team2);
+
+                if ($result_validate_team2 && $result_validate_team2->num_rows > 0) {
+                    // Insert event into the event table (without the location)
+                    $sql_insert_event = "INSERT INTO event (_foreignkey_sport_id, _foreignkey_team1_id, _foreignkey_team2_id, date_time, description)
+                                         VALUES ('$selected_sport_id', '$selected_team1', '$selected_team2', '$date_time', '$description')";
+
+                    if ($conn->query($sql_insert_event)) {
+                        // Get the ID of the newly inserted event
+                        $event_id = $conn->insert_id;
+
+                        // Insert into the event_venue table to link event with venue
+                        $sql_insert_event_venue = "INSERT INTO event_venue (_foreignkey_event_id, _foreignkey_venue_id) 
+                                                VALUES ('$event_id', '$venue_id')";
+
+                        if ($conn->query($sql_insert_event_venue)) {
+                            echo "<div class='alert alert-success' role='alert'>Event successfully created and linked to venue!</div>";
+                        } else {
+                            echo "<div class='alert alert-danger' role='alert'>Error linking event to venue: " . $conn->error . "</div>";
+                        }
+                    } else {
+                        echo "<div class='alert alert-danger' role='alert'>Error creating event: " . $conn->error . "</div>";
+                    }
+                } else {
+                    echo "<div class='alert alert-danger' role='alert'>Team 2 does not exist in the database.</div>";
+                }
+            }
+        }
     }
-
-    $layout .= "</div>";  // Close the event-container div
-
-} else {
-    $layout = "<p>No upcoming events found.</p>";  // If no events are found, display a message
 }
 
 $conn->close();  // Close the database connection
@@ -122,52 +116,96 @@ $conn->close();  // Close the database connection
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports Calendar</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/calendar/public/assets/css/style.css">
+    <title>Create Event</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 </head>
 
 <body>
+    <div class="container mt-5">
+        <h2>Create Event</h2>
 
-    <div class="container my-5">
-        <h2 class="text-center">Upcoming Sports Events</h2>
-        <!-- Display the event layout -->
-        <?= $layout; ?>
+        <form id="eventForm" method="POST" action="">
+            <!-- Sport Selection Dropdown -->
+            <div class="mb-3">
+                <label for="sport" class="form-label">Select Sport</label>
+                <select class="form-select" name="sport" id="sport" onchange="this.form.submit()">
+                    <option value="">Select Sport</option>
+                    <?php foreach ($sports as $sport): ?>
+                        <option value="<?= htmlspecialchars($sport['id']) ?>" <?= $selected_sport_id == $sport['id'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($sport['sport']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
 
-        <!-- Carousel Navigation -->
-        <div class="text-center mt-4">
-            <button class="btn btn-primary" id="prev-btn">Previous</button>
-            <button class="btn btn-primary" id="next-btn">Next</button>
-        </div>
+            <!-- Team 1 Selection (Visible after sport is selected) -->
+            <?php if ($selected_sport_id): ?>
+                <div class="mb-3">
+                    <label for="team1" class="form-label">Team 1</label>
+                    <select class="form-select" name="team1" id="team1" onchange="this.form.submit()">
+                        <option value="">Select Team 1</option>
+                        <?php foreach ($teams as $team): ?>
+                            <option value="<?= $team['id'] ?>" <?= $selected_team1 == $team['id'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($team['team_name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <!-- Team 2 Selection -->
+                <div class="mb-3">
+                    <label for="team2" class="form-label">Team 2</label>
+                    <select class="form-select" name="team2" id="team2">
+                        <option value="">Select Team 2</option>
+                        <?php foreach ($teams as $team): ?>
+                            <option value="<?= $team['id'] ?>" <?= $selected_team2 == $team['id'] ? 'selected' : '' ?>
+                                <?php if ($team['id'] == $selected_team1) echo 'disabled'; ?>>
+                                <?= htmlspecialchars($team['team_name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <!-- Date and Time -->
+                <div class="mb-3">
+                    <label for="date_time" class="form-label">Game Time</label>
+                    <input type="datetime-local" class="form-control" id="date_time" name="date_time" required>
+                </div>
+
+                <!-- Location (Venue) automatically filled based on Team 1 -->
+                <div class="mb-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="location" name="location" value="<?= htmlspecialchars($location); ?>" readonly>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary" id="submitButton">Create Event</button>
+            <?php endif; ?>
+        </form>
     </div>
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
     <script>
-        const prevButton = document.getElementById('prev-btn');
-        const nextButton = document.getElementById('next-btn');
-        const eventContainer = document.querySelector('.event-container');
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('eventForm');
+            const submitButton = document.getElementById('submitButton');
 
-        let scrollPosition = 0;
-        const scrollAmount = 300; // Scroll by 300px each time
+            form.addEventListener('submit', function(event) {
+                const team1 = document.getElementById('team1').value;
+                const team2 = document.getElementById('team2').value;
+                const date_time = document.getElementById('date_time').value;
+                const description = document.getElementById('description').value;
 
-        // Event listener for the previous button
-        prevButton.addEventListener('click', () => {
-            scrollPosition -= scrollAmount;
-            if (scrollPosition < 0) scrollPosition = 0; // Prevent scrolling beyond the start
-            eventContainer.scrollTo({
-                left: scrollPosition,
-                behavior: 'smooth'
-            });
-        });
-
-        // Event listener for the next button
-        nextButton.addEventListener('click', () => {
-            scrollPosition += scrollAmount;
-            eventContainer.scrollTo({
-                left: scrollPosition,
-                behavior: 'smooth'
+                // Prevent form submission if required fields are not filled
+                if (!team1 || !team2 || !date_time || !description || team1 === team2) {
+                    event.preventDefault();
+                    alert('Please fill in all required fields');
+                }
             });
         });
     </script>
