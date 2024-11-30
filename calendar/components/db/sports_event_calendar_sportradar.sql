@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 30, 2024 at 09:12 AM
+-- Generation Time: Nov 30, 2024 at 05:07 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -43,8 +43,6 @@ CREATE TABLE `event` (
 --
 
 INSERT INTO `event` (`id`, `date_time`, `description`, `_foreignkey_sport_id`, `score`, `result_status`, `_foreignkey_team1_id`, `_foreignkey_team2_id`) VALUES
-(1, '2024-11-25 18:30:00', 'Salzburg vs Sturm', 1, NULL, NULL, 1, 2),
-(5, '2024-11-28 18:00:00', 'Red Sox vs Yankees', 5, '', '', 9, 10),
 (6, '2024-12-01 20:00:00', 'FC Barcelona vs Real Madrid - Super Copa', 1, NULL, NULL, 11, 12),
 (7, '2024-12-03 22:00:00', 'Manchester United vs FC Barcelona - Champions League', 1, NULL, NULL, 13, 11),
 (8, '2024-12-03 19:30:00', 'Houston Rockets vs Boston Celtics - NBA Finals', 3, NULL, NULL, 14, 15),
@@ -60,9 +58,8 @@ INSERT INTO `event` (`id`, `date_time`, `description`, `_foreignkey_sport_id`, `
 (18, '2025-03-10 19:00:00', 'Chicago Blackhawks vs Boston Bruins - NHL Game', 2, NULL, NULL, 20, 19),
 (20, '2025-01-09 20:00:00', 'Boston Celtics vs Chicago Bulls - NBA Playoffs', 3, NULL, 'draw', 15, 6),
 (21, '2024-12-03 20:00:00', 'Boston Red Sox vs NY Yankees - MLB', 5, NULL, 'draw', 9, 10),
-(22, '2024-11-30 18:43:00', 'adwdaw', 3, NULL, 'draw', 17, 5),
-(23, '2024-11-30 18:47:00', 'asdd', 3, NULL, 'draw', 16, 17),
-(24, '2024-11-30 18:48:00', 'adadad', 1, NULL, 'draw', 1, 12);
+(23, '2024-11-30 18:47:00', 'Golden State Warriors vs Toronto Raptors', 3, NULL, 'draw', 16, 17),
+(24, '2024-11-30 18:48:00', 'Red Bull Salzburg vs Real Madrid', 1, NULL, 'draw', 1, 12);
 
 -- --------------------------------------------------------
 
@@ -83,14 +80,6 @@ CREATE TABLE `event_team` (
 --
 
 INSERT INTO `event_team` (`id`, `_foreignkey_event_id`, `_foreignkey_team_id`, `score`, `result_status`) VALUES
-(1, 1, 1, 3, 'win'),
-(2, 1, 2, 2, 'lose'),
-(9, 5, 9, 5, 'win'),
-(10, 5, 10, 3, 'lose'),
-(11, 1, 1, 0, 'draw'),
-(12, 1, 2, 0, 'draw'),
-(19, 5, 9, 0, 'draw'),
-(20, 5, 10, 0, 'draw'),
 (21, 6, 11, 0, 'draw'),
 (22, 6, 12, 0, 'draw'),
 (23, 7, 6, 0, 'draw'),
@@ -132,7 +121,6 @@ INSERT INTO `event_venue` (`id`, `_foreignkey_event_id`, `_foreignkey_venue_id`)
 (17, 12, 6),
 (19, 20, 12),
 (20, 21, 6),
-(21, 22, 14),
 (22, 23, 13),
 (23, 24, 1);
 
@@ -292,7 +280,7 @@ ALTER TABLE `venue`
 -- AUTO_INCREMENT for table `event`
 --
 ALTER TABLE `event`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `event_team`
@@ -304,7 +292,7 @@ ALTER TABLE `event_team`
 -- AUTO_INCREMENT for table `event_venue`
 --
 ALTER TABLE `event_venue`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `sport`
