@@ -34,6 +34,8 @@ $sport_id = $event['sport_id'];
 $sql_teams = "SELECT id, name, logo FROM team WHERE _foreignkey_sport_id = '$sport_id'";
 $result_teams = $conn->query($sql_teams);
 
+$alert_message = "";
+
 $sql_venues = "SELECT v.id, v.name 
     FROM venue v
     INNER JOIN team t ON v.id = t._foreignkey_venue_id
@@ -63,12 +65,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             WHERE _foreignkey_event_id = '$event_id'";
 
         if ($conn->query($sql_update_venue) === TRUE) {
-            echo "<div class='alert alert-success'>Event successfully updated.</div>";
+            $alert_message = "<div class='alert alert-success'>Event successfully updated.</div>";
         } else {
-            echo "<div class='alert alert-danger'>Error updating venue: " . $conn->error . "</div>";
+            $alert_message = "<div class='alert alert-danger'>Error updating venue: " . $conn->error . "</div>";
         }
     } else {
-        echo "<div class='alert alert-danger'>Error updating event: " . $conn->error . "</div>";
+        $alert_message = "<div class='alert alert-danger'>Error updating event: " . $conn->error . "</div>";
     }
 }
 
@@ -89,6 +91,10 @@ $conn->close();
 
 <body>
     <div><?php require_once "../components/navbar.php"; ?></div>
+    <div class="container mt-3">
+        <?= $alert_message ?>
+    </div>
+
     <div class="container my-5">
         <h2 class="text-center mb-4">Update Event</h2>
 

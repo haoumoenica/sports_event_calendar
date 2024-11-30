@@ -45,6 +45,10 @@ $conn->close();
 <body>
     <div><?php require_once "../components/navbar.php"; ?></div>
 
+    <div class="container mt-3">
+        <?= $alert_message ?>
+    </div>
+
     <div class="container create-event-container">
         <h2>Create Event</h2>
 
