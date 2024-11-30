@@ -1,0 +1,99 @@
+<mxfile host="65bd71144e">
+    <diagram id="fx5RIPe-_8VJotHfkc2u" name="Page-1">
+        <mxGraphModel dx="832" dy="563" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="16" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=-0.021;entryY=0.444;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="2" target="3">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="320" y="260" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="260" y="220"/>
+                            <mxPoint x="260" y="260"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="19" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=-0.008;entryY=0.664;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="2" target="8">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="140" y="220"/>
+                            <mxPoint x="150" y="873"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="2" value="Sport&lt;br&gt;&lt;br&gt;- id int(11)&lt;br&gt;&lt;br&gt;- name VARCHAR(255)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry y="150" width="120" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="&lt;p&gt;Event&lt;/p&gt;&lt;p&gt;&lt;/p&gt;- id int(11)&lt;br&gt;&lt;p&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;- date_time: datetime&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;- description: text&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;- _foreignkey_sport_id int(11)&lt;p&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;- score Varchar(255)&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;(unused)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p&gt;- result_status enum(&quot;win&quot;, &quot;lose&quot;,&quot;draw&quot;)&amp;nbsp;&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;(unused)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;- _foreignkey_team1_id int(11)&lt;/p&gt;&lt;div&gt;&lt;p&gt;- _foreignkey_team2_id int(11)&lt;/p&gt;&lt;/div&gt;&lt;p&gt;&lt;/p&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="325" y="110" width="200" height="340" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" style="edgeStyle=none;html=1;entryX=0.025;entryY=0.794;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.001;exitY=0.202;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="8" target="3">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="340" y="790" as="sourcePoint"/>
+                        <mxPoint x="320" y="380" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="210" y="794"/>
+                            <mxPoint x="210" y="590"/>
+                            <mxPoint x="210" y="380"/>
+                            <mxPoint x="280" y="380"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="18" style="edgeStyle=none;html=1;exitX=-0.013;exitY=0.198;exitDx=0;exitDy=0;entryX=-0.007;entryY=0.874;entryDx=0;entryDy=0;entryPerimeter=0;exitPerimeter=0;" edge="1" parent="1" source="8" target="3">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="210" y="794"/>
+                            <mxPoint x="210" y="407"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="20" style="edgeStyle=none;html=1;exitX=0;exitY=0.25;exitDx=0;exitDy=0;entryX=0.005;entryY=0.211;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="4" target="3">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="240" y="528"/>
+                            <mxPoint x="240" y="182"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="4" value="&lt;p style=&quot;line-height: 120%;&quot;&gt;Event_Team&lt;/p&gt;&lt;p&gt;&lt;/p&gt;- id int(11)&lt;br&gt;&lt;p&gt;&lt;/p&gt;- _foreignkey_event_id int(11)&lt;p&gt;&lt;/p&gt;- _foreignkey_team_id int(11)&lt;p&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;score int(11)&amp;nbsp;&lt;/span&gt;&lt;br&gt;&lt;/p&gt;(unused)&lt;p&gt;&lt;/p&gt;&lt;p&gt;result_status enum(&quot;win&quot;, &quot;lose&quot;,&quot;draw&quot;)&amp;nbsp;&lt;/p&gt;(unused)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="290" y="470" width="250" height="230" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" style="edgeStyle=none;html=1;exitX=0;exitY=0.353;exitDx=0;exitDy=0;entryX=0.995;entryY=0.194;entryDx=0;entryDy=0;entryPerimeter=0;exitPerimeter=0;" edge="1" parent="1" source="6" target="3">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="580" y="170" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="570" y="220"/>
+                            <mxPoint x="570" y="175"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="11" style="edgeStyle=none;html=1;exitX=-0.006;exitY=0.635;exitDx=0;exitDy=0;entryX=0;entryY=0.353;entryDx=0;entryDy=0;entryPerimeter=0;exitPerimeter=0;" edge="1" parent="1" source="6" target="7">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="590" y="560" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="570" y="268"/>
+                            <mxPoint x="570" y="560"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="6" value="&lt;p&gt;Event_Venue&lt;/p&gt;&lt;p&gt;&lt;/p&gt;- id int(11)&lt;br&gt;- _foreignkey_event_id int(11)&lt;p&gt;&lt;/p&gt;&lt;p&gt;- _foreignkey_venue_id int(11)&lt;/p&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;p style=&quot;border-color: rgb(0, 0, 0); color: rgb(240, 240, 240); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(42, 37, 47); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;&quot;&gt;&lt;/p&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="620" y="160" width="190" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="&lt;p&gt;Venue&lt;/p&gt;&lt;p&gt;&lt;/p&gt;- id int(11)&lt;br&gt;&lt;br&gt;- name VARCHAR(255)&lt;p&gt;- locationVARCHAR(255)&lt;br&gt;&lt;/p&gt;&lt;p&gt;- type varchar(255) (unused)&lt;/p&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="660" y="500" width="160" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" style="edgeStyle=none;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0.003;entryY=0.344;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="8" target="7">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="600" y="888"/>
+                            <mxPoint x="600" y="560"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="8" value="&lt;p&gt;Team&lt;/p&gt;&lt;p&gt;&lt;/p&gt;- id int(11)&lt;br&gt;&lt;p&gt;- name VARCHAR(255)&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p&gt;- logo VARCHAR(255)&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p&gt;- _foreignkey_sport_id int(11)&lt;/p&gt;&lt;p&gt;- _foreignkey_venue_id int(11)&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;p style=&quot;border-color: rgb(0, 0, 0); color: rgb(240, 240, 240); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(42, 37, 47); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;&quot;&gt;&lt;/p&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="345" y="760" width="170" height="170" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
